@@ -5,7 +5,7 @@ import joblib
 import numpy as np  # <-- Import numpy
 from kafka import KafkaConsumer
 from elasticsearch import Elasticsearch, exceptions as es_exceptions
-from datetime import datetime
+from datetime import datetime, UTC
 import time
 
 # --- 1. Centralized Configuration ---
@@ -15,7 +15,7 @@ CONFIG = {
     "kafka_consumer_group": 'ddos_detector_group',
     "es_host": "http://localhost:9200",
     "es_index": "ddos_predictions",
-    "artifact_path": 'lr_artifact.joblib',
+    "artifact_path": 'LR_model_artifacts.pkl',
     # --- New Class Map for your 3-class model ---
     "class_map": {
         0: "Attack",
@@ -77,7 +77,7 @@ def process_flow(flow_data, ml_artifact, es_client):
 
         # --- Store Results in Elasticsearch ---
         document = {
-            "@timestamp": datetime.utcnow(),
+            "@timestamp": datetime.now(UTC),
             "prediction": prediction_label,
             "confidence": confidence_score,
             "all_probabilities": all_probabilities, # Store all class probabilities
