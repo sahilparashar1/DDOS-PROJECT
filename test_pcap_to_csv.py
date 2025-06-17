@@ -28,6 +28,25 @@ def test_pcap_conversion():
     # Update paths in config
     config_data['pcap_file_address'] = os.path.abspath(test_pcap)
     config_data['output_file_address'] = os.path.abspath(output_csv)
-    
-    # Run NTLFlowLyzer and process results
-    # ... rest of the code
+    with open(temp_config, 'w') as f:
+        json.dump(config_data, f, indent=4)
+   #Running NTLFlowLyzer
+    print(f"Running NTLFlowlyzer...")
+    ntl_command = ['NTLFlowLyzer','-c','temp_config.json'] 
+    subprocess.run(ntl_command, check=True)
+
+    #Reading the output CSV
+    print(f"Reading the output CSV...")
+    df=pd.read_csv(output_csv)
+    print(f"CSV file read successfully!")
+
+    #Displaying the first few rows of the dataframe
+    print(f"First few rows of the dataframe:")
+    print(df.head())
+
+if __name__ == "__main__":
+    test_pcap_conversion()
+    #Removing the temporary config file
+    if os.path.exists('temp_config.json'):
+        os.remove('temp_config.json')
+    print("Temporary config file removed!")
