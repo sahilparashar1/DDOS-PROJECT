@@ -50,7 +50,7 @@ def process_flow(flow_data, ml_artifact, es_client):
     try:
         model = ml_artifact['model']
         scaler = ml_artifact['scaler']
-        feature_order = ml_artifact['feature_order']
+        feature_order = ml_artifact['columns']
         model_classes = model.classes_ # The learned order, e.g., [0, 1, 2]
 
         # --- Preprocess the received flow ---
