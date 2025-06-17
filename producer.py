@@ -7,7 +7,7 @@ import os
 
 # --- Configuration ---
 # All user-configurable paths and settings are at the top.
-TIME_WINDOW_SECONDS = 30
+TIME_WINDOW_SECONDS = 20
 # --- MODIFIED THIS LINE FOR YOUR Wi-Fi INTERFACE ---
 INTERFACE_NAME = '7'
 KAFKA_TOPIC = 'processed_network_flows'
