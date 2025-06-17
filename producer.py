@@ -25,10 +25,9 @@ print(f"Starting dynamic-config producer on interface #{INTERFACE_NAME}...")
 while True:
     # 1. Generate unique filenames for this batch
     timestamp_str = str(int(time.time()))
-    pcap_file = os.path.abspath(f"flows_test/capture_{timestamp_str}.pcap")
-    csv_file = os.path.abspath(f"flows_tests/flows_{timestamp_str}.csv")
+    pcap_file = os.path.abspath(f"Flows_test/capture_{timestamp_str}.pcap")
+    csv_file = os.path.abspath(f"flows_tests_csv/flows_{timestamp_str}.csv")
     temp_config_file = os.path.abspath(f"NTLFlowlyzer/config_{timestamp_str}.json")
-
     try:
         # 2. Capture packets into the .pcap file
         print(f"[{time.ctime()}] Capturing {TIME_WINDOW_SECONDS}s of traffic from interface #{INTERFACE_NAME}...")
