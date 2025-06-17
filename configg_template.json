@@ -1,6 +1,6 @@
 {
-    "pcap_file_address":"test.pcap",
-    "output_file_address": "./output.csv",
+    "pcap_file_address":"PLACEHOLDER_PCAP_PATH",
+    "output_file_address": "PLACEHOLDER_CSV_PATH",
     "label": "Benign",
     "number_of_threads": 4,
     "feature_extractor_min_flows": 2500,
