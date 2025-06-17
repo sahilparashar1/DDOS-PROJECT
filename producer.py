@@ -5,7 +5,7 @@ import json
 from kafka import KafkaProducer
 import os
 
-# --- Configuration ---
+# --- Configuration ---w
 # All user-configurable paths and settings are at the top.
 TIME_WINDOW_SECONDS = 20
 # --- MODIFIED THIS LINE FOR YOUR Wi-Fi INTERFACE ---
@@ -28,11 +28,11 @@ except Exception as e:
 print("Starting PCAP to CSV conversion test...")
 
 # Create output directories if they don't exist
-os.makedirs("flows_tests_csv", exist_ok=True)
+os.makedirs("flow_tests_csv", exist_ok=True)
 
 # Use the test PCAP file
 test_pcap = os.path.abspath("NTLFlowLyzer/test.pcap")
-csv_file = os.path.abspath("flows_tests_csv/test_output.csv")
+csv_file = os.path.abspath("flow_tests_csv/test_output.csv")
 temp_config_file = os.path.abspath("temp_config.json")
 
 try:
@@ -62,6 +62,7 @@ try:
             # Replace infinite values which can occur during feature calculation
             df_flows.replace([float('inf'), float('-inf')], 0, inplace=True)
             df_flows.fillna(0, inplace=True)
+            df_flows['handshake_duration'].replace('not a complete handshake',-1,inplace=True)
 
             print(f"\nSuccessfully processed {len(df_flows)} flows!")
             print(f"CSV file created at: {csv_file}")
@@ -70,7 +71,7 @@ try:
             # Print first few rows as example
             print("\nFirst few rows of the data:")
             print(df_flows.head().to_string())
-            
+
             if producer:
                 print("\nSending flows to Kafka...")
                 for _, row in df_flows.iterrows():
