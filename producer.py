@@ -12,7 +12,7 @@ TIME_WINDOW_SECONDS = 30
 INTERFACE_NAME = '7'
 KAFKA_TOPIC = 'processed_network_flows'
 NTL_EXECUTABLE_PATH = 'NTLFlowLyzer'     # Or the full path if not in your system's PATH
-CONFIG_TEMPLATE_PATH = 'config.template.json'
+CONFIG_TEMPLATE_PATH = 'configg_template.json'
 
 # --- Kafka Producer Setup ---
 producer = KafkaProducer(
@@ -32,7 +32,7 @@ while True:
     try:
         # 2. Capture packets into the .pcap file
         print(f"[{time.ctime()}] Capturing {TIME_WINDOW_SECONDS}s of traffic from interface #{INTERFACE_NAME}...")
-        tshark_command = ['tshark', '-i', INTERFACE_NAME, '-a', f'duration:{TIME_WINDOW_SECONDS}', '-w', pcap_file]
+        tshark_command = ['tshark', '-i', INTERFACE_NAME, '-F', 'pcap', '-a', f'duration:{TIME_WINDOW_SECONDS}', '-w', pcap_file]
         subprocess.run(tshark_command, check=True, capture_output=True)
 
         # 3. Dynamically create the config file for NTLFlowlyzer
@@ -41,8 +41,8 @@ while True:
             config_data = json.load(f)
 
         # Update the paths in the configuration
-        config_data['pcap_file_path'] = pcap_file
-        config_data['output_csv_path'] = csv_file
+        config_data['pcap_file_address'] = pcap_file
+        config_data['output_file_address'] = csv_file
 
         with open(temp_config_file, 'w') as f:
             json.dump(config_data, f, indent=4)
