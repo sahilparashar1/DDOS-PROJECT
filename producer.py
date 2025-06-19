@@ -6,6 +6,7 @@ from kafka import KafkaProducer
 import os
 import datetime
 import sys
+import requests
 
 # --- Configuration ---
 TIME_WINDOW_SECONDS = 120
@@ -76,12 +77,12 @@ try:
             print(f"Error running NTLFlowLyzer: {e}")
             continue
 
-        # 4. Read the CSV and send each flow to Kafka if connected
+        # 4. Read the CSV and send each flow to FastAPI for prediction
         if os.path.exists(csv_file):
             print(f"Reading CSV file: {csv_file}")
             try:
                 df_flows = pd.read_csv(csv_file)
-                # Clean the raw data before sending to Kafka
+                # Clean the raw data before sending to FastAPI
                 df_flows = df_flows.replace([float('inf'), float('-inf')], 0)
                 df_flows = df_flows.fillna(0)
                 df_flows = df_flows.replace({'handshake_duration': 'not a complete handshake'}, -1)
@@ -93,13 +94,33 @@ try:
                 print("\nFirst few rows of the data:")
                 print(df_flows.head().to_string())
 
-                if producer:
-                    print("\nSending flows to Kafka...")
-                    for _, row in df_flows.iterrows():
-                        producer.send(KAFKA_TOPIC, row.to_dict())
-                    print(f"Sent {len(df_flows)} flows to Kafka topic '{KAFKA_TOPIC}'.")
-                else:
-                    print("\nSkipping Kafka sending (no connection)")
+                # Send each flow to FastAPI for prediction and then to Kafka
+                print("\nSending flows to FastAPI for prediction and then to Kafka...")
+                for _, row in df_flows.iterrows():
+                    flow_dict = row.to_dict()
+                    try:
+                        response = requests.post(
+                            "http://localhost:8000/predict",
+                            json={"flow": flow_dict},
+                            timeout=10
+                        )
+                        if response.status_code == 200:
+                            result = response.json()
+                            print(f"Prediction: {result['prediction']} (Confidence: {result['confidence']:.4f})")
+                            # Send to Kafka
+                            if producer:
+                                kafka_message = {
+                                    "flow": flow_dict,
+                                    "prediction": result["prediction"],
+                                    "confidence": result["confidence"],
+                                    "all_probabilities": result["all_probabilities"]
+                                }
+                                producer.send(KAFKA_TOPIC, kafka_message)
+                        else:
+                            print(f"FastAPI error: {response.status_code} {response.text}")
+                    except Exception as e:
+                        print(f"Error contacting FastAPI: {e}")
+                print(f"Sent {len(df_flows)} flows to FastAPI for prediction and to Kafka.")
 
             except pd.errors.EmptyDataError:
                 print(f"Warning: {csv_file} was empty. No flows to process.")
