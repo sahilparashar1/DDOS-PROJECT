@@ -103,7 +103,13 @@ def main():
     if not ml_artifact:
         return
 
-    es_client = Elasticsearch(CONFIG['es_host'])
+    # Initialize Elasticsearch client with compatible version
+    es_client = Elasticsearch(
+        CONFIG['es_host'],
+        request_timeout=30,
+        max_retries=3,
+        retry_on_timeout=True
+    )
     
     while True:
         try:

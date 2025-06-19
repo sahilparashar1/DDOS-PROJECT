@@ -18,7 +18,7 @@ dependencies = [
     "fastapi (>=0.115.12,<0.116.0)",
     "seaborn (>=0.13.2,<0.14.0)",
     "kafka-python (>=2.2.11,<3.0.0)",
-    "elasticsearch (>=9.0.2,<10.0.0)",
+    "elasticsearch (>=8.0.0,<9.0.0)",
 ]
 
 
