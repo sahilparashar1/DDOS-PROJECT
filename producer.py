@@ -8,7 +8,7 @@ import datetime
 import sys
 
 # --- Configuration ---
-TIME_WINDOW_SECONDS = 20
+TIME_WINDOW_SECONDS = 120
 INTERFACE_NAME = '8'  # Change as needed
 KAFKA_TOPIC = 'processed_network_flows'
 NTL_EXECUTABLE_PATH = 'NTLFlowLyzer'  # Or the full path if not in your system's PATH
@@ -48,6 +48,7 @@ try:
             "-F", "pcap"
         ]
         try:
+            start_time=time.time()
             subprocess.run(tshark_cmd, check=True)
             print(f"PCAP saved to: {pcap_file}")
         except Exception as e:
@@ -112,7 +113,9 @@ try:
             os.remove(temp_config_file)
 
         print("Processing complete! Waiting before next capture...\n")
-        time.sleep(2)  # Optional: short pause before next capture
+        end_time=time.time()
+        print(f"Time taken: {end_time-start_time} seconds")
+        #time.sleep(2)  # Optional: short pause before next capture
 
 except KeyboardInterrupt:
     print("\nProgram interrupted by user. Exiting gracefully.")
