@@ -59,10 +59,13 @@ try:
         try:
             df_flows = pd.read_csv(csv_file)
             
-            # Replace infinite values which can occur during feature calculation
-            df_flows.replace([float('inf'), float('-inf')], 0, inplace=True)
-            df_flows.fillna(0, inplace=True)
-            df_flows['handshake_duration'].replace('not a complete handshake',-1,inplace=True)
+            # Clean the raw data before sending to Kafka
+            # This is necessary because some flows have problematic values
+            df_flows = df_flows.replace([float('inf'), float('-inf')], 0)
+            df_flows = df_flows.fillna(0)
+            df_flows = df_flows.replace({'handshake_duration': 'not a complete handshake'}, -1)
+            # Ensure handshake_duration is numeric
+            df_flows['handshake_duration'] = pd.to_numeric(df_flows['handshake_duration'], errors='coerce').fillna(-1)
 
             print(f"\nSuccessfully processed {len(df_flows)} flows!")
             print(f"CSV file created at: {csv_file}")

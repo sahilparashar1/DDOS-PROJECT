@@ -59,6 +59,12 @@ def process_flow(flow_data, ml_artifact, es_client):
             if col not in live_flow_df.columns:
                 live_flow_df[col] = 0
         live_flow_df = live_flow_df[feature_order]
+        
+        # Data should already be clean from producer, but ensure it's ready for ML
+        # Convert any remaining problematic values
+        live_flow_df = live_flow_df.replace([float('inf'), float('-inf')], 0)
+        live_flow_df = live_flow_df.fillna(0)
+        
         scaled_features = scaler.transform(live_flow_df)
 
         # --- Multi-Class Prediction ---
