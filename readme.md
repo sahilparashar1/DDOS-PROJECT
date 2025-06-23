@@ -6,7 +6,41 @@ This project implements a real-time, high-performance system for detecting Distr
 
 The system is composed of several microservices and components that work together to create a robust data pipeline. The data flows through the system as follows:
 
-![Architecture Diagram](https://chart.googleapis.com/chart?cht=gv&chl=graph%20TD%3B%0A%20%20%20%20subgraph%20%22Host%20Machine%22%0A%20%20%20%20%20%20%20%20A%5BLive%20Network%20Traffic%5D%20--%3E%7Ctshark%7C%20B(PCAP%20Capture)%3B%0A%20%20%20%20%20%20%20%20B%20--%3E%7CNTLFlowLyzer%7C%20C(CSV%20Flow%20File)%3B%0A%20%20%20%20%20%20%20%20C%20--%3E%20P%5BProducer%3A%20producer_optimized.py%5D%3B%0A%20%20%20%20end%0A%0A%20%20%20%20subgraph%20%22Processing%20%26%20Analysis%22%0A%20%20%20%20%20%20%20%20P%20--%3E%7C1.%20Send%20Batch%20for%20Prediction%7C%20M%5BML%20API%3A%20ml_api_ultra_fast.py%5D%3B%0A%20%20%20%20%20%20%20%20M%20--%3E%7C2.%20Return%20Predictions%7C%20P%3B%0A%20%20%20%20%20%20%20%20P%20--%3E%7C3.%20Send%20Results%7C%20K%5BKafka%5D%3B%0A%20%20%20%20end%0A%0A%20%20%20%20subgraph%20%22Data%20Storage%20%26%20Consumption%22%0A%20%20%20%20%20%20%20%20K%20--%3E%20CON%5BConsumer%3A%20consumer.py%5D%3B%0A%20%20%20%20%20%20%20%20CON%20--%3E%7CStore%20Predictions%7C%20ES%5B(Elasticsearch)%5D%3B%0A%20%20%20%20end%0A%0A%20%20%20%20subgraph%20%22Monitoring%20%26%20Logging%22%0A%20%20%20%20%20%20%20%20P%20--%3E%7CLogs%7C%20FD%3B%0A%20%20%20%20%20%20%20%20M%20--%3E%7CLogs%7C%20FD(Fluentd)%3B%0A%20%20%20%20%20%20%20%20CON%20--%3E%7CLogs%7C%20FD%3B%0A%20%20%20%20%20%20%20%20FD%20--%3E%7CForward%20Logs%7C%20ES%3B%0A%20%20%20%20%20%20%20%20ES%20--%3E%7CData%20Source%7C%20G%5BGrafana%5D%3B%0A%20%20%20%20end%0A%0A%20%20%20%20style%20P%20fill%3A%23cde4ff%0A%20%20%20%20style%20M%20fill%3A%23cde4ff%0A%20%20%20%20style%20CON%20fill%3A%23cde4ff%0A%20%20%20%20style%20K%20fill%3A%23ffb3ba%0A%20%20%20%20style%20ES%20fill%3A%23ffb3ba%0A%20%20%20%20style%20G%20fill%3A%23baffc9%0A%20%20%20%20style%20FD%20fill%3A%23baffc9%0A)
+```mermaid
+graph TD;
+    subgraph "Host Machine"
+        A[Live Network Traffic] -->|tshark| B(PCAP Capture);
+        B -->|NTLFlowLyzer| C(CSV Flow File);
+        C --> P[Producer: producer_optimized.py];
+    end
+
+    subgraph "Processing & Analysis"
+        P -->|1. Send Batch for Prediction| M[ML API: ml_api_ultra_fast.py];
+        M -->|2. Return Predictions| P;
+        P -->|3. Send Results| K[Kafka];
+    end
+
+    subgraph "Data Storage & Consumption"
+        K --> CON[Consumer: consumer.py];
+        CON -->|Store Predictions| ES[(Elasticsearch)];
+    end
+
+    subgraph "Monitoring & Logging"
+        P -->|Logs| FD;
+        M -->|Logs| FD(Fluentd);
+        CON -->|Logs| FD;
+        FD -->|Forward Logs| ES;
+        ES -->|Data Source| G[Grafana];
+    end
+
+    style P fill:#cde4ff
+    style M fill:#cde4ff
+    style CON fill:#cde4ff
+    style K fill:#ffb3ba
+    style ES fill:#ffb3ba
+    style G fill:#baffc9
+    style FD fill:#baffc9
+```
 
 ## Key Features
 
