@@ -1,5 +1,6 @@
 __pycache__/
-Flows_test/
 flow_tests_csv/
 temp_config_*.json
 .venv/
+data/
+captured_traffic/

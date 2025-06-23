@@ -1,0 +1,192 @@
+{
+  "dashboard": {
+    "id": null,
+    "title": "DDoS Detection System Monitoring",
+    "tags": ["ddos", "security", "monitoring"],
+    "style": "dark",
+    "timezone": "browser",
+    "panels": [
+      {
+        "id": 1,
+        "title": "System Overview",
+        "type": "stat",
+        "targets": [
+          {
+            "refId": "A",
+            "expr": "count_over_time(ddos-*[5m])",
+            "legendFormat": "Total Logs (5m)"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "palette-classic"
+            },
+            "custom": {
+              "displayMode": "list"
+            }
+          }
+        },
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 0,
+          "y": 0
+        }
+      },
+      {
+        "id": 2,
+        "title": "Predictions by Type",
+        "type": "piechart",
+        "targets": [
+          {
+            "refId": "A",
+            "expr": "sum(rate(ddos-predictions[5m])) by (prediction)",
+            "legendFormat": "{{prediction}}"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "palette-classic"
+            }
+          }
+        },
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 12,
+          "y": 0
+        }
+      },
+      {
+        "id": 3,
+        "title": "Prediction Confidence Distribution",
+        "type": "histogram",
+        "targets": [
+          {
+            "refId": "A",
+            "expr": "histogram_quantile(0.95, sum(rate(ddos-predictions[5m])) by (le))",
+            "legendFormat": "95th Percentile"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "palette-classic"
+            }
+          }
+        },
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 0,
+          "y": 8
+        }
+      },
+      {
+        "id": 4,
+        "title": "Processing Performance",
+        "type": "timeseries",
+        "targets": [
+          {
+            "refId": "A",
+            "expr": "avg(rate(ddos-predictions[5m])) by (component)",
+            "legendFormat": "{{component}}"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "palette-classic"
+            }
+          }
+        },
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 12,
+          "y": 8
+        }
+      },
+      {
+        "id": 5,
+        "title": "Error Rate",
+        "type": "timeseries",
+        "targets": [
+          {
+            "refId": "A",
+            "expr": "sum(rate(ddos-*[5m])) by (level)",
+            "legendFormat": "{{level}}"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "palette-classic"
+            }
+          }
+        },
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 0,
+          "y": 16
+        }
+      },
+      {
+        "id": 6,
+        "title": "Component Health",
+        "type": "stat",
+        "targets": [
+          {
+            "refId": "A",
+            "expr": "count_over_time(ddos-producer[5m])",
+            "legendFormat": "Producer"
+          },
+          {
+            "refId": "B",
+            "expr": "count_over_time(ddos-consumer[5m])",
+            "legendFormat": "Consumer"
+          },
+          {
+            "refId": "C",
+            "expr": "count_over_time(ddos-ml_api[5m])",
+            "legendFormat": "ML API"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "palette-classic"
+            },
+            "custom": {
+              "displayMode": "list"
+            }
+          }
+        },
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 12,
+          "y": 16
+        }
+      }
+    ],
+    "time": {
+      "from": "now-1h",
+      "to": "now"
+    },
+    "timepicker": {},
+    "templating": {
+      "list": []
+    },
+    "annotations": {
+      "list": []
+    },
+    "refresh": "5s",
+    "schemaVersion": 27,
+    "version": 0,
+    "links": []
+  }
+} 
