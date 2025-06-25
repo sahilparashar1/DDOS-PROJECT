@@ -167,7 +167,7 @@
       "targets": [
         {
           "refId": "A",
-          "expr": "SELECT AVG(confidence*100) FROM ddos_predictions WHERE $__timeFilter(@timestamp)",
+          "expr": "SELECT AVG(confidence) FROM ddos_predictions WHERE $__timeFilter(@timestamp)",
           "datasource": "Elasticsearch"
         }
       ],
@@ -193,11 +193,11 @@
               },
               {
                 "color": "yellow",
-                "value": 70
+                "value": 0.7
               },
               {
                 "color": "green",
-                "value": 90
+                "value": 0.9
               }
             ]
           },
@@ -219,7 +219,7 @@
       "targets": [
         {
           "refId": "A",
-          "expr": "SELECT AVG(confidence*100) FROM ddos_predictions WHERE $__timeFilter(@timestamp) GROUP BY time($__interval)",
+          "expr": "SELECT AVG(confidence) FROM ddos_predictions WHERE $__timeFilter(@timestamp) GROUP BY time($__interval)",
           "datasource": "Elasticsearch"
         }
       ],
