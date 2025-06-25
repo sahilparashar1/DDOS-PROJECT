@@ -1,0 +1,507 @@
+{
+  "id": null,
+  "title": "DDoS Detection Real-Time Monitor",
+  "tags": ["ddos", "security", "network"],
+  "style": "dark",
+  "timezone": "browser",
+  "panels": [
+    {
+      "id": 1,
+      "title": "Traffic Volume Over Time",
+      "type": "timeseries",
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "SELECT COUNT(*) FROM ddos_predictions WHERE $__timeFilter(@timestamp) GROUP BY time($__interval)",
+          "datasource": "Elasticsearch"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "vis": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "short"
+        }
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "id": 2,
+      "title": "Prediction Distribution",
+      "type": "piechart",
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "SELECT prediction, COUNT(*) FROM ddos_predictions WHERE $__timeFilter(@timestamp) GROUP BY prediction",
+          "datasource": "Elasticsearch"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "vis": false
+            }
+          },
+          "mappings": []
+        }
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 0
+      }
+    },
+    {
+      "id": 3,
+      "title": "Attack Detection Rate",
+      "type": "stat",
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "SELECT COUNT(*) FROM ddos_predictions WHERE prediction = 'Attack' AND $__timeFilter(@timestamp)",
+          "datasource": "Elasticsearch"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "vis": false
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 10
+              }
+            ]
+          },
+          "unit": "short"
+        }
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 6,
+        "x": 0,
+        "y": 8
+      }
+    },
+    {
+      "id": 4,
+      "title": "Suspicious Activity Count",
+      "type": "stat",
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "SELECT COUNT(*) FROM ddos_predictions WHERE prediction = 'Suspicious' AND $__timeFilter(@timestamp)",
+          "datasource": "Elasticsearch"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "vis": false
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 5
+              },
+              {
+                "color": "red",
+                "value": 20
+              }
+            ]
+          },
+          "unit": "short"
+        }
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 6,
+        "x": 6,
+        "y": 8
+      }
+    },
+    {
+      "id": 5,
+      "title": "Benign Traffic Count",
+      "type": "stat",
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "SELECT COUNT(*) FROM ddos_predictions WHERE prediction = 'Benign' AND $__timeFilter(@timestamp)",
+          "datasource": "Elasticsearch"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "vis": false
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "short"
+        }
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 6,
+        "x": 12,
+        "y": 8
+      }
+    },
+    {
+      "id": 6,
+      "title": "Average Confidence Score",
+      "type": "stat",
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "SELECT AVG(confidence) FROM ddos_predictions WHERE $__timeFilter(@timestamp)",
+          "datasource": "Elasticsearch"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "vis": false
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red",
+                "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 0.7
+              },
+              {
+                "color": "green",
+                "value": 0.9
+              }
+            ]
+          },
+          "unit": "percentunit",
+          "decimals": 2
+        }
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 6,
+        "x": 18,
+        "y": 8
+      }
+    },
+    {
+      "id": 7,
+      "title": "Prediction Confidence Over Time",
+      "type": "timeseries",
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "SELECT AVG(confidence) FROM ddos_predictions WHERE $__timeFilter(@timestamp) GROUP BY time($__interval)",
+          "datasource": "Elasticsearch"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "vis": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "percentunit",
+          "decimals": 2
+        }
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 12
+      }
+    },
+    {
+      "id": 8,
+      "title": "Recent Predictions Table",
+      "type": "table",
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "SELECT @timestamp, prediction, confidence, flow_data.src_ip, flow_data.dst_ip FROM ddos_predictions WHERE $__timeFilter(@timestamp) ORDER BY @timestamp DESC LIMIT 20",
+          "datasource": "Elasticsearch"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          }
+        }
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 12
+      }
+    },
+    {
+      "id": 9,
+      "title": "Top Source IPs (Attacks)",
+      "type": "barchart",
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "SELECT flow_data.src_ip, COUNT(*) FROM ddos_predictions WHERE prediction = 'Attack' AND $__timeFilter(@timestamp) GROUP BY flow_data.src_ip ORDER BY COUNT(*) DESC LIMIT 10",
+          "datasource": "Elasticsearch"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "vis": false
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "short"
+        }
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 20
+      }
+    },
+    {
+      "id": 10,
+      "title": "Top Destination IPs (Attacks)",
+      "type": "barchart",
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "SELECT flow_data.dst_ip, COUNT(*) FROM ddos_predictions WHERE prediction = 'Attack' AND $__timeFilter(@timestamp) GROUP BY flow_data.dst_ip ORDER BY COUNT(*) DESC LIMIT 10",
+          "datasource": "Elasticsearch"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "vis": false
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "short"
+        }
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 20
+      }
+    }
+  ],
+  "time": {
+    "from": "now-1h",
+    "to": "now"
+  },
+  "timepicker": {},
+  "templating": {
+    "list": []
+  },
+  "annotations": {
+    "list": []
+  },
+  "refresh": "5s",
+  "schemaVersion": 30,
+  "version": 1,
+  "links": []
+} 

@@ -91,8 +91,6 @@ try:
                 print(f"\nSuccessfully processed {len(df_flows)} flows!")
                 print(f"CSV file created at: {csv_file}")
                 print(f"Number of features extracted: {len(df_flows.columns)}")
-                print("\nFirst few rows of the data:")
-                print(df_flows.head().to_string())
 
                 # Send each flow to FastAPI for prediction and then to Kafka
                 print("\nSending flows to FastAPI for prediction and then to Kafka...")
@@ -106,7 +104,7 @@ try:
                         )
                         if response.status_code == 200:
                             result = response.json()
-                            print(f"Prediction: {result['prediction']} (Confidence: {result['confidence']:.4f})")
+                            #print(f"Prediction: {result['prediction']} (Confidence: {result['confidence']:.4f})")
                             # Send to Kafka
                             if producer:
                                 kafka_message = {
