@@ -163,12 +163,19 @@
     {
       "id": 5,
       "title": "Average Confidence Score",
-      "type": "stat",
+      "type": "Number",
       "targets": [
         {
           "refId": "A",
-          "expr": "SELECT AVG(confidence) FROM ddos_predictions WHERE $__timeFilter(@timestamp)",
-          "datasource": "Elasticsearch"
+          "metrics": [
+            {
+              "id": "1",
+              "type": "avg",
+              "field": "confidence"
+            }
+          ],
+          "datasource": "Elasticsearch",
+          "query": "*"
         }
       ],
       "fieldConfig": {
@@ -201,7 +208,7 @@
               }
             ]
           },
-          "unit": "percentunit",
+          "unit": "short",
           "decimals": 2
         }
       },
@@ -266,7 +273,7 @@
               }
             ]
           },
-          "unit": "percentunit",
+          "unit": "short",
           "decimals": 2
         }
       },

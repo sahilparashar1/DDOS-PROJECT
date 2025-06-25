@@ -13,8 +13,8 @@ import queue
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
 # --- Configuration ---
-TIME_WINDOW_SECONDS = 20
-INTERFACE_NAME = '8'  # Change as needed
+TIME_WINDOW_SECONDS = 16
+INTERFACE_NAME = 'Wi-Fi'  # Change as needed
 KAFKA_TOPIC = 'processed_network_flows'
 NTL_EXECUTABLE_PATH = 'NTLFlowLyzer'  # Or the full path if not in your system's PATH
 CONFIG_TEMPLATE_PATH = 'configg_template.json'
