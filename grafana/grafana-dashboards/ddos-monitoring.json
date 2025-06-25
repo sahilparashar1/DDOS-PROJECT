@@ -71,39 +71,6 @@
     },
     {
       "id": 2,
-      "title": "Prediction Distribution",
-      "type": "piechart",
-      "targets": [
-        {
-          "refId": "A",
-          "expr": "SELECT prediction, COUNT(*) FROM ddos_predictions WHERE $__timeFilter(@timestamp) GROUP BY prediction",
-          "datasource": "Elasticsearch"
-        }
-      ],
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "vis": false
-            }
-          },
-          "mappings": []
-        }
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 12,
-        "x": 12,
-        "y": 0
-      }
-    },
-    {
-      "id": 3,
       "title": "Attack Detection Rate",
       "type": "stat",
       "targets": [
@@ -133,9 +100,10 @@
                 "color": "green",
                 "value": null
               },
+              { "color": "yellow", "value": 1 },
               {
                 "color": "red",
-                "value": 10
+                "value": 5
               }
             ]
           },
@@ -151,57 +119,6 @@
     },
     {
       "id": 4,
-      "title": "Suspicious Activity Count",
-      "type": "stat",
-      "targets": [
-        {
-          "refId": "A",
-          "expr": "SELECT COUNT(*) FROM ddos_predictions WHERE prediction = 'Suspicious' AND $__timeFilter(@timestamp)",
-          "datasource": "Elasticsearch"
-        }
-      ],
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "custom": {
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "vis": false
-            }
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "yellow",
-                "value": 5
-              },
-              {
-                "color": "red",
-                "value": 20
-              }
-            ]
-          },
-          "unit": "short"
-        }
-      },
-      "gridPos": {
-        "h": 4,
-        "w": 6,
-        "x": 6,
-        "y": 8
-      }
-    },
-    {
-      "id": 5,
       "title": "Benign Traffic Count",
       "type": "stat",
       "targets": [
@@ -244,13 +161,13 @@
       }
     },
     {
-      "id": 6,
+      "id": 5,
       "title": "Average Confidence Score",
       "type": "stat",
       "targets": [
         {
           "refId": "A",
-          "expr": "SELECT AVG(confidence) FROM ddos_predictions WHERE $__timeFilter(@timestamp)",
+          "expr": "SELECT AVG(confidence*100) FROM ddos_predictions WHERE $__timeFilter(@timestamp)",
           "datasource": "Elasticsearch"
         }
       ],
@@ -276,11 +193,11 @@
               },
               {
                 "color": "yellow",
-                "value": 0.7
+                "value": 70
               },
               {
                 "color": "green",
-                "value": 0.9
+                "value": 90
               }
             ]
           },
@@ -296,13 +213,13 @@
       }
     },
     {
-      "id": 7,
+      "id": 6,
       "title": "Prediction Confidence Over Time",
       "type": "timeseries",
       "targets": [
         {
           "refId": "A",
-          "expr": "SELECT AVG(confidence) FROM ddos_predictions WHERE $__timeFilter(@timestamp) GROUP BY time($__interval)",
+          "expr": "SELECT AVG(confidence*100) FROM ddos_predictions WHERE $__timeFilter(@timestamp) GROUP BY time($__interval)",
           "datasource": "Elasticsearch"
         }
       ],
@@ -358,134 +275,6 @@
         "w": 12,
         "x": 0,
         "y": 12
-      }
-    },
-    {
-      "id": 8,
-      "title": "Recent Predictions Table",
-      "type": "table",
-      "targets": [
-        {
-          "refId": "A",
-          "expr": "SELECT @timestamp, prediction, confidence, flow_data.src_ip, flow_data.dst_ip FROM ddos_predictions WHERE $__timeFilter(@timestamp) ORDER BY @timestamp DESC LIMIT 20",
-          "datasource": "Elasticsearch"
-        }
-      ],
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "custom": {
-            "align": "auto",
-            "cellOptions": {
-              "type": "auto"
-            },
-            "inspect": false
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              }
-            ]
-          }
-        }
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 12,
-        "x": 12,
-        "y": 12
-      }
-    },
-    {
-      "id": 9,
-      "title": "Top Source IPs (Attacks)",
-      "type": "barchart",
-      "targets": [
-        {
-          "refId": "A",
-          "expr": "SELECT flow_data.src_ip, COUNT(*) FROM ddos_predictions WHERE prediction = 'Attack' AND $__timeFilter(@timestamp) GROUP BY flow_data.src_ip ORDER BY COUNT(*) DESC LIMIT 10",
-          "datasource": "Elasticsearch"
-        }
-      ],
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "vis": false
-            }
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              }
-            ]
-          },
-          "unit": "short"
-        }
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 12,
-        "x": 0,
-        "y": 20
-      }
-    },
-    {
-      "id": 10,
-      "title": "Top Destination IPs (Attacks)",
-      "type": "barchart",
-      "targets": [
-        {
-          "refId": "A",
-          "expr": "SELECT flow_data.dst_ip, COUNT(*) FROM ddos_predictions WHERE prediction = 'Attack' AND $__timeFilter(@timestamp) GROUP BY flow_data.dst_ip ORDER BY COUNT(*) DESC LIMIT 10",
-          "datasource": "Elasticsearch"
-        }
-      ],
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "vis": false
-            }
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              }
-            ]
-          },
-          "unit": "short"
-        }
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 12,
-        "x": 12,
-        "y": 20
       }
     }
   ],
