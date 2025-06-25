@@ -9,7 +9,7 @@ import sys
 import requests
 
 # --- Configuration ---
-TIME_WINDOW_SECONDS = 120
+TIME_WINDOW_SECONDS = 20
 INTERFACE_NAME = '8'  # Change as needed
 KAFKA_TOPIC = 'processed_network_flows'
 NTL_EXECUTABLE_PATH = 'NTLFlowLyzer'  # Or the full path if not in your system's PATH
