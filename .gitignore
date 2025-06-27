@@ -3,3 +3,4 @@ Flows_test/
 flow_tests_csv/
 temp_config_*.json
 .venv/
+grafana/Alerts/
