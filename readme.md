@@ -42,17 +42,25 @@ To run the complete system, follow these steps:
 ### Prerequisites
 
 *   Python 3.8+
+*   [Poetry](https://python-poetry.org/) (for dependency management)
 *   Docker and Docker Compose
 *   Wireshark (ensure `tshark` is in your system's PATH)
-*   Python dependencies. Install them using `pip install -r requirements.txt`. The `NTLFlowLyzer` has its own `requirements.txt` as well.
 
-### 1. Install NTLFlowLyzer
+### 1. Install Dependencies with Poetry
 
-Navigate to the `NTLFlowLyzer` directory and install the package.
+This project uses [Poetry](https://python-poetry.org/) for dependency management. If you don't have Poetry installed, follow the [official installation guide](https://python-poetry.org/docs/#installation).
+
+Install the dependencies for the main project:
+
+```bash
+poetry install --no-root
+```
+
+Then, install the dependencies for the `NTLFlowLyzer` package:
 
 ```bash
 cd NTLFlowLyzer
-pip install .
+poetry run python setup.py --install
 cd ..
 ```
 
@@ -68,20 +76,20 @@ You can check the status of the containers with `docker-compose ps`.
 
 ### 3. Run the Machine Learning API
 
-In a new terminal, start the ML API server.
+In a new terminal, start the ML API server (using Poetry's environment):
 
 ```bash
-python ml_api.py
+poetry run python ml_api.py
 ```
 
 The API will be available at `http://localhost:8000`. You can check its health at `http://localhost:8000/health`.
 
 ### 4. Run the Consumer
 
-In another terminal, start the Kafka consumer to store results in Elasticsearch.
+In another terminal, start the Kafka consumer to store results in Elasticsearch:
 
 ```bash
-python consumer.py
+poetry run python consumer.py
 ```
 
 ### 5. Run the Producer
@@ -91,7 +99,7 @@ Finally, in a separate terminal, start the producer to capture traffic and begin
 **Note:** You may need to run this script with `sudo` on Linux/macOS or as an administrator on Windows to allow for network interface capture. You might also need to change the `INTERFACE_NAME` variable in `producer.py` to match the network interface you want to monitor (e.g., 'eth0', 'en0').
 
 ```bash
-python producer.py
+poetry run python producer.py
 ```
 
 ### 6. View the Dashboard
