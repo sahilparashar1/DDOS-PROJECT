@@ -133,7 +133,7 @@ Defines and configures all the necessary third-party services, ensuring they can
 
 ## Monitoring & Visualization
 
-The system is equipped with tools to monitor its behavior and visualize the results.
+The system is equipped with a few tools to monitor its behavior and visualize the results.
 
 -   **Grafana:**
     -   **URL:** `http://localhost:3001`
